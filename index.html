@@ -61,3 +61,95 @@
             <div class="stat-row">
                 <span>Tank B <i>dh/dt</i>:</span>
                 <span id="speedB" class="value">
+
+                    <script>
+    (function() {
+        var container = document.getElementById('canvas-container');
+        var scene = new THREE.Scene();
+        
+        // ADJUSTED CAMERA: Moved back slightly (z=18) and up (y=7) to ensure tanks stay in frame
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 7, 18); 
+        camera.lookAt(0, 2.5, 0);
+
+        var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        var ambientLight = new THREE.AmbientLight(0x404040, 2);
+        scene.add(ambientLight);
+        var dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        dirLight.position.set(5, 10, 7.5);
+        scene.add(dirLight);
+
+        var tankMat = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+        var waterMat = new THREE.MeshPhongMaterial({ color: 0x00aaff, transparent: true, opacity: 0.7, shininess: 100 });
+
+        function createTank(x, r) {
+            var shellGeo = new THREE.CylinderGeometry(r, r, 6, 32, 1, true);
+            var shell = new THREE.Mesh(shellGeo, tankMat);
+            shell.position.set(x, 3, 0);
+            scene.add(shell);
+
+            var waterGeo = new THREE.CylinderGeometry(r, r, 1, 32);
+            var water = new THREE.Mesh(waterGeo, waterMat);
+            water.position.set(x, 0.5, 0); // Started slightly higher to ensure visibility
+            scene.add(water);
+
+            return { shell: shell, water: water, radius: r, height: 0.1 };
+        }
+
+        // ADJUSTED POSITIONS: Moved tanks closer to center (x = -2.2 and 2.2)
+        var tankA = createTank(-2.2, 1.0);
+        var tankB = createTank(2.2, 1.5);
+
+        var dVdt = 0.01;
+
+        function updateRates() {
+            var rateA = dVdt / (Math.PI * Math.pow(tankA.radius, 2));
+            var rateB = dVdt / (Math.PI * Math.pow(tankB.radius, 2));
+            document.getElementById('speedA').innerText = rateA.toFixed(5);
+            document.getElementById('speedB').innerText = rateB.toFixed(5);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            [tankA, tankB].forEach(function(t) {
+                if (t.height < 6) {
+                    var dhdt = dVdt / (Math.PI * Math.pow(t.radius, 2));
+                    t.height += dhdt;
+                    t.water.scale.y = t.height;
+                    t.water.position.y = t.height / 2;
+                }
+            });
+            renderer.render(scene, camera);
+        }
+
+        var slider = document.getElementById('radiusSlider');
+        slider.addEventListener('input', function(e) {
+            var r = parseFloat(e.target.value);
+            document.getElementById('rVal').innerText = r.toFixed(2);
+            tankB.radius = r;
+            tankB.shell.geometry.dispose();
+            tankB.shell.geometry = new THREE.CylinderGeometry(r, r, 6, 32, 1, true);
+            tankB.water.geometry.dispose();
+            tankB.water.geometry = new THREE.CylinderGeometry(r, r, 1, 32);
+            updateRates();
+        });
+
+        document.getElementById('resetBtn').onclick = function() {
+            tankA.height = 0.1;
+            tankB.height = 0.1;
+        };
+
+        window.addEventListener('resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        updateRates();
+        animate();
+    })();
+</script>
