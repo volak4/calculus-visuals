@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculus Animation Library</title>
+    <style>
+        body { margin: 0; background: #1a1a1a; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px; }
+        .container { max-width: 800px; width: 100%; }
+        h1 { color: #00aaff; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; margin-top: 30px; }
+        .card { background: #2a2a2a; border: 1px solid #444; border-radius: 12px; padding: 20px; text-decoration: none; color: white; transition: transform 0.2s, border-color 0.2s; }
+        .card:hover { transform: translateY(-5px); border-color: #00aaff; background: #333; }
+        .card h3 { margin: 0 0 10px 0; color: #00aaff; }
+        .card p { font-size: 0.9em; color: #ccc; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Interactive Calculus Visuals</h1>
+        <p>Select a lesson below to explore interactive 3D simulations.</p>
+        
+        <div class="grid">
+            <a href="filling-tank.html" class="card">
+                <h3>Filling Cylindrical Tanks</h3>
+                <p>Explore the related rates between radius and vertical speed (dh/dt) in real-time.</p>
+            </a>
+
+            <a href="#" class="card" style="opacity: 0.5; cursor: not-allowed;">
+                <h3>The Sliding Ladder (Coming Soon)</h3>
+                <p>Visualizing acceleration as a ladder slides down a wall.</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
