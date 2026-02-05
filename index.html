@@ -60,13 +60,22 @@
             </div>
             <div class="stat-row">
                 <span>Tank B <i>dh/dt</i>:</span>
-                <span id="speedB" class="value">
- <script>
+                <span id="speedB" class="value">0.00141</span>
+            </div>
+        </div>
+        
+        <button id="resetBtn">Reset Animation</button>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
     (function() {
         var container = document.getElementById('canvas-container');
         var scene = new THREE.Scene();
         
-        // ADJUSTED CAMERA: Moved back slightly (z=18) and up (y=7) to ensure tanks stay in frame
         var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 7, 18); 
         camera.lookAt(0, 2.5, 0);
@@ -93,15 +102,14 @@
 
             var waterGeo = new THREE.CylinderGeometry(r, r, 1, 32);
             var water = new THREE.Mesh(waterGeo, waterMat);
-            water.position.set(x, 0.5, 0); // Started slightly higher to ensure visibility
+            water.position.set(x, 0.5, 0);
             scene.add(water);
 
             return { shell: shell, water: water, radius: r, height: 0.1 };
         }
 
-        // ADJUSTED POSITIONS: Moved tanks closer to center (x = -2.2 and 2.2)
-        var tankA = createTank(-2.2, 1.0);
-        var tankB = createTank(2.2, 1.5);
+        var tankA = createTank(-2.5, 1.0);
+        var tankB = createTank(2.5, 1.5);
 
         var dVdt = 0.01;
 
@@ -152,3 +160,5 @@
         animate();
     })();
 </script>
+</body>
+</html>
